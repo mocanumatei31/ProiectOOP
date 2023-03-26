@@ -7,8 +7,8 @@ class Player
     std::string Name;//Player Character's Name
     int HP, MaxHP, STR, DEF;//Player Character's Attributes
 public:
-    Player(const std::string _Name="", int _HP=100, int _MaxHP=100, int _STR=1, int _DEF=1):Name(_Name), HP(_HP), MaxHP(_MaxHP), STR(_STR), DEF(_DEF){}
-    Player(const Player& other):Name(other.Name), HP(other.HP), MaxHP(other.MaxHP), STR(other.STR), DEF(other.DEF){}
+    explicit Player(std::string Name_="", int HP_=100, int MaxHP_=100, int STR_=1, int DEF_=1):Name(Name_), HP(HP_), MaxHP(MaxHP_), STR(STR_), DEF(DEF_){}
+    explicit Player(const Player& other):Name(other.Name), HP(other.HP), MaxHP(other.MaxHP), STR(other.STR), DEF(other.DEF){}
     friend std::ostream& operator <<(std::ostream& out, const Player& p)
     {
         out<<p.Name<<"'s stats:\n";
@@ -55,7 +55,7 @@ class Enemy
 {
     int HP, MaxHP, STR, DEF;//Enemy's basic attributes
 public:
-    Enemy(int _HP=0, int _MaxHP=0, int _STR=0, int _DEF=0):HP(_HP), MaxHP(_MaxHP), STR(_STR), DEF(_DEF){}
+    Enemy(int HP_=0, int MaxHP_=0, int STR_=0, int DEF_=0):HP(HP_), MaxHP(MaxHP_), STR(STR_), DEF(DEF_){}
     Enemy(const Enemy& other):HP(other.HP), MaxHP(other.MaxHP), STR(other.STR), DEF(other.DEF){}
     friend std::ostream& operator <<(std::ostream& out, const Enemy& e)
     {
