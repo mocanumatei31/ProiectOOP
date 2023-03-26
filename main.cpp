@@ -7,8 +7,8 @@ class Player
     std::string Name;//Player Character's Name
     int HP, MaxHP, STR, DEF;//Player Character's Attributes
 public:
-    explicit Player(std::string Name_="", int HP_=100, int MaxHP_=100, int STR_=1, int DEF_=1):Name(Name_), HP(HP_), MaxHP(MaxHP_), STR(STR_), DEF(DEF_){}
-    explicit Player(const Player& other):Name(other.Name), HP(other.HP), MaxHP(other.MaxHP), STR(other.STR), DEF(other.DEF){}
+    Player(const std::string& Name_="", int HP_=100, int MaxHP_=100, int STR_=1, int DEF_=1):Name(Name_), HP(HP_), MaxHP(MaxHP_), STR(STR_), DEF(DEF_){}
+    Player(const Player& other):Name(other.Name), HP(other.HP), MaxHP(other.MaxHP), STR(other.STR), DEF(other.DEF){}
     friend std::ostream& operator <<(std::ostream& out, const Player& p)
     {
         out<<p.Name<<"'s stats:\n";
