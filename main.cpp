@@ -114,6 +114,20 @@ class Game
     Enemy e{100, 100, 1, 1};
 public:
     Game()=default;
+    Game(const Game& other):p(other.p), e(other.e){}
+    ~Game(){}
+    Game& operator=(const Game& other)
+    {
+        p=other.p;
+        e=other.e;
+        return *this;
+    }
+    friend std::ostream& operator <<(std::ostream& out, const Game& game)
+    {
+        out<<game.p;
+        out<<game.e;
+        return out;
+    }
     void CharacterCreation()
     {
         std::cout<<"Welcome, Adventurer. Please enter your name.\n";
@@ -123,6 +137,29 @@ public:
     }
     void Battle()
     {
+        std::cout<<"This is your opponent:\n";
+        std::cout<<e<<"\n";
+        std::cout<<"Please choose an action:\n";
+        std::cout<<"1.Fight\n";
+        std::cout<<"2.Leave\n";
+        int op;
+        std::cin>>op;
+        while(true)
+        {
+            switch(op)
+            {
+                case 1:
+                    std::cout<<"Let the fight begin!\n";
+                    break;
+                case 2:
+                    std::cout<<"Let us fight another time.\n";
+                    return;
+                default:
+                    std::cout<<"Invalid input\n";
+                    break;
+            }
+            if(op==1) break;
+        }
         bool fled=false;
         while(p.isAlive() && e.isAlive())
         {
@@ -130,8 +167,8 @@ public:
             {
                 std::cout<<"Please choose an action:\n";
                 std::cout<<"1.Attack\n";
-                std::cout<<"2.Flee\n";
-                int op;
+                std::cout<<"2.Check Current Stats\n";
+                std::cout<<"3.Flee\n";
                 std::cin>>op;
                 switch(op)
                 {
@@ -139,13 +176,16 @@ public:
                         p.NormalAttack(e);
                         break;
                     case 2:
+                        std::cout<<*this;
+                        break;
+                    case 3:
                         fled=true;
                         break;
                     default:
                         std::cout<<"Invalid Input\n";
                         break;
                 }
-                if(op==1 || op==2) break;
+                if(op==1 || op==3) break;
             }
             if(fled) break;
             if(!e.isAlive())
@@ -162,7 +202,14 @@ public:
 int main()
 {
     Game game;
+    Game game2;
     game.CharacterCreation();
+    std::cout<<"\n--------------------\n!!Game suspended. Copy constructor, = operator and << operator showcase for game class:\n";
+    game2=game;
+    std::cout<<game2;
+    Game game3(game);
+    std::cout<<game3;
+    std::cout<<"Showcase over!!\n--------------------\n\n";
     game.Battle();
     return 0;
 }
