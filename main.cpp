@@ -112,9 +112,9 @@ void Enemy::NormalAttack(Player& p)
 
 class Weapon{
     int durability, base_damage;
-    bool isEquipped;
+    //bool isEquipped;
 public:
-    Weapon(int durability_=100, int base_damage_=150, bool isEquipped_=false):durability(durability_),base_damage(base_damage_),isEquipped(isEquipped_){}
+    Weapon(int durability_=100, int base_damage_=150):durability(durability_),base_damage(base_damage_){}
     friend std::ostream& operator <<(std::ostream& out, const Weapon& weapon)
     {
         out<<"Weapon stats:\n";
@@ -134,15 +134,19 @@ public:
     {
         durability=std::max(0,durability-x);
     }
-    void Equip()
+    //Currently unused
+    /**void Equip()
     {
         isEquipped=true;
     }
-    //Currently unused
     void Unequip()
     {
         isEquipped=false;
     }
+    bool IsWeaponEquipped()
+    {
+        return isEquipped;
+    }*/
 };
 
 void Player::NormalWeaponAttack(Enemy& e, Weapon& weapon)
@@ -229,7 +233,6 @@ public:
             }
             if(op==1) break;
         }
-        weapon.Equip();
         std::cout<<weapon;
         bool fled=false;
         while(player.isAlive() && enemy.isAlive())
