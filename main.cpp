@@ -1,6 +1,7 @@
 #include <iostream>
 
 class Enemy;
+class Weapon;
 
 class Player
 {
@@ -34,20 +35,22 @@ public:
     ~Player(){}
     void HP_Depletion(const int x)
     {
-        HP-=x;
+        HP=std::max(0,HP-x);
     }
     bool isAlive()
     {
         return HP>0;
     }
     void NormalAttack(Enemy& e);
+    void NormalWeaponAttack(Enemy& e, Weapon& weapon);
+    void LightWeaponAttack(Enemy& e, Weapon& weapon);
     int NormalAttackStrength()
     {
         return 25+25*STR/10;
     }
     int NormalAttackDefense()
     {
-        return 25*DEF/10;
+        return 25 * DEF / 10;
     }
 };
 
@@ -79,7 +82,7 @@ public:
     }
     void HP_Depletion(int x)
     {
-        HP-=x;
+        HP=std::max(0,HP-x);
     }
     ~Enemy(){}
     int NormalAttackStrength()
@@ -105,40 +108,106 @@ void Enemy::NormalAttack(Player& p)
     p.HP_Depletion(std::max(0,NormalAttackStrength()-p.NormalAttackDefense()));
     std::cout<<"Enemy used Normal Attack\n";
     std::cout<<"It has dealt "<<std::max(0,NormalAttackStrength()-p.NormalAttackDefense())<<" Damage\n";
+}
 
+class Weapon{
+    int durability, base_damage;
+    bool isEquipped;
+public:
+    Weapon(int durability_=100, int base_damage_=150, bool isEquipped_=false):durability(durability_),base_damage(base_damage_),isEquipped(isEquipped_){}
+    friend std::ostream& operator <<(std::ostream& out, const Weapon& weapon)
+    {
+        out<<"Weapon stats:\n";
+        out<<"Durability: "<< weapon.durability<<"\\100\n";
+        out<<"Base Damage: "<< weapon.base_damage<<"\n";
+        return out;
+    }
+    bool isFunctional()
+    {
+       return durability>0;
+    }
+    int AttackDamage()
+    {
+        return base_damage - (100 - durability) * base_damage / 100;
+    }
+    void DurabilityDecrease(int x)
+    {
+        durability=std::max(0,durability-x);
+    }
+    void Equip()
+    {
+        isEquipped=true;
+    }
+    //Currently unused
+    void Unequip()
+    {
+        isEquipped=false;
+    }
+};
+
+void Player::NormalWeaponAttack(Enemy& e, Weapon& weapon)
+{
+    if(weapon.isFunctional())
+    {
+        e.HP_Depletion(std::max(0,weapon.AttackDamage()-e.NormalAttackDefense()));
+        std::cout<<Name<<" used Weapon Attack\n";
+        std::cout<<"It has dealt "<<std::max(0,weapon.AttackDamage()-e.NormalAttackDefense())<<" Damage\n";
+        weapon.DurabilityDecrease(5);
+    }
+    else
+    {
+        std::cout<<"You can't use a broken weapon";
+    }
+}
+
+void Player::LightWeaponAttack(Enemy& e, Weapon& weapon)
+{
+    if(weapon.isFunctional())
+    {
+        e.HP_Depletion(std::max(0,weapon.AttackDamage()/3*2-e.NormalAttackDefense()));
+        std::cout<<Name<<" used Light Weapon Attack\n";
+        std::cout<<"It has dealt "<<std::max(0,weapon.AttackDamage()/3*2-e.NormalAttackDefense())<<" Damage\n";
+        weapon.DurabilityDecrease(3);
+    }
+    else
+    {
+        std::cout<<"You can't use a broken weapon";
+    }
 }
 
 class Game
 {
-    Player p;
-    Enemy e{100, 100, 1, 1};
+    Player player;
+    Enemy enemy{100, 100, 1, 1};
+    Weapon weapon;
 public:
     Game()=default;
-    Game(const Game& other):p(other.p), e(other.e){}
+    Game(const Game& other):player(other.player), enemy(other.enemy), weapon(other.weapon){}
     ~Game(){}
     Game& operator=(const Game& other)
     {
-        p=other.p;
-        e=other.e;
+        player=other.player;
+        enemy=other.enemy;
         return *this;
     }
     friend std::ostream& operator <<(std::ostream& out, const Game& game)
     {
-        out<<game.p;
-        out<<game.e;
+        out<<game.player;
+        out<<game.enemy;
         return out;
     }
     void CharacterCreation()
     {
         std::cout<<"Welcome, Adventurer. Please enter your name.\n";
-        std::cin>>p;
+        std::cin>>player;
         std::cout<<"This is your profile:\n";
-        std::cout<<p;
+        std::cout<<player;
     }
+    //Currently just showcasing fighting mechanics
     void Battle()
     {
         std::cout<<"This is your opponent:\n";
-        std::cout<<e<<"\n";
+        std::cout<<enemy<<"\n";
         std::cout<<"Please choose an action:\n";
         std::cout<<"1.Fight\n";
         std::cout<<"2.Leave\n";
@@ -160,40 +229,66 @@ public:
             }
             if(op==1) break;
         }
+        weapon.Equip();
+        std::cout<<weapon;
         bool fled=false;
-        while(p.isAlive() && e.isAlive())
+        while(player.isAlive() && enemy.isAlive())
         {
             while(true)
             {
                 std::cout<<"Please choose an action:\n";
-                std::cout<<"1.Attack\n";
-                std::cout<<"2.Check Current Stats\n";
-                std::cout<<"3.Flee\n";
+                std::cout<<"1.Punch\n";
+                std::cout<<"2.Use Weapon\n";
+                std::cout<<"3.Check Current Stats\n";
+                std::cout<<"4.Flee\n";
                 std::cin>>op;
+                bool checkWeapon=true;
+                bool invalid=false;
                 switch(op)
                 {
                     case 1:
-                        p.NormalAttack(e);
+                        player.NormalAttack(enemy);
                         break;
                     case 2:
-                        std::cout<<*this;
+                        checkWeapon=weapon.isFunctional();
+                        int attackType;
+                        std::cout<<"Choose your Attack Type\n";
+                        std::cout<<"1.Light Attack\n";
+                        std::cout<<"2.Normal Attack\n";
+                        std::cin>>attackType;
+                        switch(attackType)
+                        {
+                            case 1:
+                                player.LightWeaponAttack(enemy,weapon);
+                                break;
+                            case 2:
+                                player.NormalWeaponAttack(enemy,weapon);
+                                break;
+                            default:
+                                invalid=true;
+                                std::cout<<"Invalid Input\n";
+                                break;
+                        }
                         break;
                     case 3:
+                        std::cout<<*this;
+                        break;
+                    case 4:
                         fled=true;
                         break;
                     default:
                         std::cout<<"Invalid Input\n";
                         break;
                 }
-                if(op==1 || op==3) break;
+                if(op==1 || op==4 || (op==2 && checkWeapon && !invalid) ) break;
             }
             if(fled) break;
-            if(!e.isAlive())
+            if(!enemy.isAlive())
                 break;
-            e.NormalAttack(p);
+            enemy.NormalAttack(player);
         }
         if(fled) std::cout<<"You Fled The Battlefield.\n";
-        if(p.isAlive() && !fled) std::cout<<"You Win!\n";
+        if(player.isAlive() && !fled) std::cout<<"You Win!\n";
         else std::cout<<"You Lose!\n";
     }
 
@@ -202,14 +297,7 @@ public:
 int main()
 {
     Game game;
-    Game game2;
     game.CharacterCreation();
-    std::cout<<"\n--------------------\n!!Game suspended. Copy constructor, = operator and << operator showcase for game class:\n";
-    game2=game;
-    std::cout<<game2;
-    Game game3(game);
-    std::cout<<game3;
-    std::cout<<"Showcase over!!\n--------------------\n\n";
     game.Battle();
     return 0;
 }
