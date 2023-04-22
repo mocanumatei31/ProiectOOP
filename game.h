@@ -6,7 +6,7 @@ class Game {
     Player player;
 public:
     Game();
-    Game(const Game &other);
+    //Game(const Game &other);
     ~Game();
     Game &operator=(const Game &other);
     friend std::ostream& operator <<(std::ostream& out, const Game& game);

@@ -1,7 +1,7 @@
 #include "game.h"
 #include <iostream>
 Game::Game()=default;
-Game::Game(const Game& other):player(other.player){}
+//Game::Game(const Game& other):player(other.player){}
 Game::~Game(){}
 Game& Game::operator=(const Game& other)
 {
