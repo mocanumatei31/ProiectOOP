@@ -23,18 +23,6 @@ std::istream& operator >>(std::istream& in, Player& p)
     return in;
 }
 
-Player& Player::operator=(const Player& other)
-{
-    Name=other.Name;
-    HP=other.HP;
-    MaxHP=other.MaxHP;
-    STR=other.STR;
-    DEF=other.DEF;
-    AGI=other.AGI;
-    weapon=other.weapon;
-    return *this;
-}
-
 Player::~Player()= default;
 
 void Player::NormalWeaponAttack(std::shared_ptr<Entity>& e)

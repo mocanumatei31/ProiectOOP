@@ -15,7 +15,7 @@ public:
     //Player(const Player &other);
     friend std::ostream &operator<<(std::ostream &out, const Player &p);
     friend std::istream& operator >>(std::istream& in, Player& p);
-    Player& operator=(const Player& other);
+    //Player& operator=(const Player& other);
     virtual ~Player();
     virtual void NormalWeaponAttack(std::shared_ptr<Entity>& e);
     virtual void LightWeaponAttack(std::shared_ptr<Entity>& e);
