@@ -4,8 +4,8 @@
 #include "player.h"
 #include <iostream>
 #include <memory>
-#include<typeinfo>
 #include<cstring>
+#include<typeinfo>
 Game::Game()=default;
 //Game::Game(const Game& other):player(other.player){}
 Game::~Game()= default;
@@ -73,11 +73,11 @@ void Game::Battle()
         if(op==1) break;
     }
     bool fled=false;
-    auto& obj = *player;
     while(player->isAlive() && enemy->isAlive())
     {
         while(true)
         {
+            auto& obj = *player;
             if(strcmp(typeid(obj).name(),"4Mage")==0)
             {
                 int spellType=0, spellPass=0;
