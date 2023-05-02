@@ -78,7 +78,7 @@ void Game::Battle()
         while(true)
         {
             auto& obj = *player;
-            if(strcmp(typeid(obj).name(),"4Mage")==0)
+            if(strcmp(typeid(obj).name(),"4Mage")==0 || strcmp(typeid(obj).name(),"class Mage")==0)
             {
                 int spellType=0, spellPass=0;
                 std::cout<<"Please choose an action:\n";
@@ -184,7 +184,7 @@ void Game::Battle()
                 }
                 if(op==1 || op==5 || (op==2 && checkWeapon && !invalid) || (op==3 && spellPass==1)) break;
             }
-            else if(strcmp(typeid(obj).name(),"7Warrior")==0)
+            else if(strcmp(typeid(obj).name(),"7Warrior")==0 || strcmp(typeid(obj).name(),"class Warrior")==0)
             {
                 std::cout<<"Please choose an action:\n";
                 std::cout<<"1.Punch\n";
@@ -379,7 +379,7 @@ void Game::HubArea()
             case 1:
             {
                 auto& obj = *player;
-                if(strcmp(typeid(obj).name(),"4Mage")==0) std::static_pointer_cast<Mage>(player)->ResetStats();
+                if(strcmp(typeid(obj).name(),"4Mage")==0 || strcmp(typeid(obj).name(),"class Mage")==0) std::static_pointer_cast<Mage>(player)->ResetStats();
                 else std::static_pointer_cast<Warrior>(player)->ResetStats();
                 Battle();
                 break;
