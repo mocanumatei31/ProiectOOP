@@ -19,11 +19,11 @@ Weapon& Weapon::operator=(const Weapon& other)
         type=other.type;
         return *this;
 }
-bool Weapon::isFunctional()
+bool Weapon::isFunctional() const
 {
     return condition>0;
 }
-int Weapon::AttackDamage()
+int Weapon::AttackDamage() const
 {
     return base_damage - (100 - condition) * base_damage / 100;
 }

@@ -20,4 +20,5 @@ Enemy& Enemy::operator=(const Enemy& other)
     AGI=other.AGI;
     return *this;
 }
-Enemy::~Enemy(){}
+Enemy::~Enemy()= default;
+

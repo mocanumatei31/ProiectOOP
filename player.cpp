@@ -16,6 +16,7 @@ std::ostream& operator <<(std::ostream& out, const Player& p)
     return out;
 }
 
+
 std::istream& operator >>(std::istream& in, Player& p)
 {
     in>>p.Name;
@@ -34,20 +35,20 @@ Player& Player::operator=(const Player& other)
     return *this;
 }
 
-Player::~Player(){}
+Player::~Player()= default;
 
-void Player::NormalWeaponAttack(Enemy& e)
+void Player::NormalWeaponAttack(std::shared_ptr<Entity>& e)
 {
     if(weapon.isFunctional())
     {
         std::cout<<Name<<" used Weapon Attack\n";
-        if(e.hasAvoidedAttack())
+        if(e->hasAvoidedAttack())
         {
             std::cout<<"It missed!\n";
             return;
         }
-        e.HP_Depletion(std::max(0,weapon.AttackDamage()-e.NormalAttackDefense()));
-        std::cout<<"It has dealt "<<std::max(0,weapon.AttackDamage()-e.NormalAttackDefense())<<" Damage\n";
+        e->HP_Depletion(std::max(0,weapon.AttackDamage()-e->NormalAttackDefense()));
+        std::cout<<"It has dealt "<<std::max(0,weapon.AttackDamage()-e->NormalAttackDefense())<<" Damage\n";
         weapon.ConditionDecrease(5);
     }
     else
@@ -56,18 +57,18 @@ void Player::NormalWeaponAttack(Enemy& e)
     }
 }
 
-void Player::LightWeaponAttack(Enemy& e)
+void Player::LightWeaponAttack(std::shared_ptr<Entity>& e)
 {
     if(weapon.isFunctional())
     {
         std::cout<<Name<<" used Light Weapon Attack\n";
-        if(e.hasAvoidedAttack())
+        if(e->hasAvoidedAttack())
         {
             std::cout<<"It missed!\n";
             return;
         }
-        e.HP_Depletion(std::max(0,weapon.AttackDamage()/3*2-e.NormalAttackDefense()));
-        std::cout<<"It has dealt "<<std::max(0,weapon.AttackDamage()/3*2-e.NormalAttackDefense())<<" Damage\n";
+        e->HP_Depletion(std::max(0,weapon.AttackDamage()/3*2-e->NormalAttackDefense()));
+        std::cout<<"It has dealt "<<std::max(0,weapon.AttackDamage()/3*2-e->NormalAttackDefense())<<" Damage\n";
         weapon.ConditionDecrease(3);
     }
     else
@@ -103,7 +104,12 @@ int Player::SpendCurrency(int x)
     else return -1;
 }
 
-void Player::ShowCurrencyAmount()
+void Player::ShowCurrencyAmount() const
 {
     std::cout<<"Your Money: "<<currency<<"\n";
+}
+
+void Player::ResetStats()
+{
+    HP_Fill();
 }

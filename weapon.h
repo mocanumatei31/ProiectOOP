@@ -8,13 +8,13 @@ class Weapon{
     int condition, base_damage;
     //bool isEquipped;
 public:
-    Weapon(const std::string& type_="Sword",int condition_=100, int base_damage_=150);
+    explicit Weapon(const std::string& type_="Dagger",int condition_=100, int base_damage_=100);
     Weapon(const Weapon& other);
     friend std::ostream& operator <<(std::ostream& out, const Weapon& weapon);
     ~Weapon();
     Weapon& operator=(const Weapon& other);
-    bool isFunctional();
-    int AttackDamage();
+    bool isFunctional() const;
+    int AttackDamage() const;
     void ConditionDecrease(int x);
 };
 
