@@ -32,3 +32,8 @@ void Weapon::ConditionDecrease(int x)
     condition=std::max(0,condition-x);
 }
 
+Weapon Weapon_Factory::dagger() {return Weapon("Dagger", 100, 100);}
+Weapon Weapon_Factory::spear() {return Weapon("Spear", 125, 125);}
+Weapon Weapon_Factory::sword() {return Weapon("Sword", 100, 150);}
+Weapon Weapon_Factory::longsword() {return Weapon("Longsword", 150, 200);}
+Weapon Weapon_Factory::mace() {return Weapon("Mace", 80, 250);}

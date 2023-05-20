@@ -1,8 +1,12 @@
 #include <iostream>
+#include "entity.h"
 #include "player.h"
+#include "exceptions.h"
 
 Player::Player(const std::string& Name_, int HP_, int MaxHP_, int STR_, int DEF_, int AGI_):Entity(Name_, HP_, MaxHP_, STR_, DEF_, AGI_){}
-//Player::Player(const Player& other):weapon(other.weapon), Name(other.Name), HP(other.HP), MaxHP(other.MaxHP), STR(other.STR), DEF(other.DEF), AGI(other.AGI){}
+
+Player::Player(const Player &other)=default;
+Player& Player::operator=(const Player& other)=default;
 
 std::ostream& operator <<(std::ostream& out, const Player& p)
 {
@@ -27,47 +31,32 @@ Player::~Player()= default;
 
 void Player::NormalWeaponAttack(std::shared_ptr<Entity>& e)
 {
-    if(weapon.isFunctional())
+    if(!weapon.isFunctional()) throw WeaponError("You can't use a broken weapon\n");
+    std::cout<<Name<<" used Weapon Attack\n";
+    if(e->hasAvoidedAttack())
     {
-        std::cout<<Name<<" used Weapon Attack\n";
-        if(e->hasAvoidedAttack())
-        {
-            std::cout<<"It missed!\n";
-            return;
-        }
-        e->HP_Depletion(std::max(0,weapon.AttackDamage()-e->NormalAttackDefense()));
-        std::cout<<"It has dealt "<<std::max(0,weapon.AttackDamage()-e->NormalAttackDefense())<<" Damage\n";
-        weapon.ConditionDecrease(5);
+        std::cout<<"It missed!\n";
+        return;
     }
-    else
-    {
-        std::cout<<"You can't use a broken weapon\n";
-    }
+    int attackDamage=std::max(0,weapon.AttackDamage()-e->NormalAttackDefense());
+    e->HP_Depletion(attackDamage);
+    std::cout<<"It has dealt "<<attackDamage<<" Damage\n";
+    weapon.ConditionDecrease(5);
 }
 
 void Player::LightWeaponAttack(std::shared_ptr<Entity>& e)
 {
-    if(weapon.isFunctional())
+    if(!weapon.isFunctional()) throw WeaponError("You can't use a broken weapon\n");
+    std::cout<<Name<<" used Light Weapon Attack\n";
+    if(e->hasAvoidedAttack())
     {
-        std::cout<<Name<<" used Light Weapon Attack\n";
-        if(e->hasAvoidedAttack())
-        {
-            std::cout<<"It missed!\n";
-            return;
-        }
-        e->HP_Depletion(std::max(0,weapon.AttackDamage()/3*2-e->NormalAttackDefense()));
-        std::cout<<"It has dealt "<<std::max(0,weapon.AttackDamage()/3*2-e->NormalAttackDefense())<<" Damage\n";
-        weapon.ConditionDecrease(3);
+        std::cout<<"It missed!\n";
+        return;
     }
-    else
-    {
-        std::cout<<"You can't use a broken weapon\n";
-    }
-}
-
-bool Player::isWeaponFunctional()
-{
-    return weapon.isFunctional();
+    int attackDamage=std::max(0,weapon.AttackDamage()/3*2-e->NormalAttackDefense());
+    e->HP_Depletion(attackDamage);
+    std::cout<<"It has dealt "<<attackDamage<<" Damage\n";
+    weapon.ConditionDecrease(3);
 }
 
 void Player::WeaponChange(const Weapon &newWeapon)
@@ -80,16 +69,10 @@ void Player::GainCurrency(int x)
     currency+=x;
 }
 
-//Decreases currency and returns 1 if Player has enough currency to make payment
-//Otherwise returns -1
-int Player::SpendCurrency(int x)
+void Player::SpendCurrency(int x)
 {
-    if(currency-x>=0)
-    {
-        currency-=x;
-        return 1;
-    }
-    else return -1;
+    if(currency<x) throw CurrencyError("You don't have enough money to buy this.\n");
+    currency-=x;
 }
 
 void Player::ShowCurrencyAmount() const
@@ -100,4 +83,11 @@ void Player::ShowCurrencyAmount() const
 void Player::ResetStats()
 {
     HP_Fill();
+}
+
+void Player::ShowAvailableAttacks()
+{
+    std::cout<<"Choose your Attack Type\n";
+    std::cout<<"1.Light Attack\n";
+    std::cout<<"2.Normal Attack\n";
 }

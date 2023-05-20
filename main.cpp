@@ -3,8 +3,9 @@
 
 int main()
 {
-    Game game;
+    auto& game=Game::get_game();
     game.CharacterCreation();
+    game.InitializeEnemyList();
     game.HubArea();
     return 0;
 }

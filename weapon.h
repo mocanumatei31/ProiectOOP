@@ -18,5 +18,14 @@ public:
     void ConditionDecrease(int x);
 };
 
+class Weapon_Factory
+{
+public:
+    static Weapon spear();
+    static Weapon sword();
+    static Weapon dagger();
+    static Weapon longsword();
+    static Weapon mace();
+};
 
 #endif //PROIECTOOP_WEAPON_H

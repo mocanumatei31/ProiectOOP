@@ -2,6 +2,9 @@
 #include "entity.h"
 
 Entity::Entity(const std::string &Name_, int HP_, int MaxHP_, int STR_, int DEF_, int AGI_): Name(Name_), HP(HP_), MaxHP(MaxHP_), STR(STR_), DEF(DEF_) ,AGI(AGI_){}
+Entity::Entity(const Entity& other)=default;
+Entity& Entity::operator=(const Entity& other)=default;
+Entity::~Entity()= default;
 
 void Entity::NameCharacter(const std::string& name)
 {
@@ -20,8 +23,9 @@ void Entity::NormalAttack(std::shared_ptr<Entity>& e)
         std::cout<<"It missed!\n";
         return;
     }
-    e->HP_Depletion(std::max(0,NormalAttackStrength()-e->NormalAttackDefense()));
-    std::cout<<"It has dealt "<<std::max(0,NormalAttackStrength()-e->NormalAttackDefense())<<" Damage\n";
+    int attackDamage=std::max(0,NormalAttackStrength()-e->NormalAttackDefense());
+    e->HP_Depletion(attackDamage);
+    std::cout<<"It has dealt "<<attackDamage<<" Damage\n";
 }
 
 void Entity::HP_Depletion(const int x)

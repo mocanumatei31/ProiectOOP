@@ -3,18 +3,9 @@
 
 Mage::Mage(const std::string &Name_, int HP_, int MaxHP_, int STR_, int DEF_, int AGI_, int MANA_):Player(Name_, HP_, MaxHP_, STR_, DEF_, AGI_), MANA(MANA_){}
 
-std::ostream& operator <<(std::ostream& out, const Mage& p)
+std::shared_ptr<Entity> Mage::clone() const
 {
-    out<<p.Name<<"'s stats:\n";
-    out<<"Class: Mage\n";
-    out<<"HP: "<<p.HP<<"/"<<p.MaxHP<<"\n";
-    out<<"Strength: "<<p.STR<<"\n";
-    out<<"Defence: "<<p.DEF<<"\n";
-    out<<"Agility: "<<p.AGI<<"\n";
-    out<<"Mana: "<<p.MANA<<"\n";
-    out<<"Your Money: "<<p.currency<<"\n";
-    out<<p.weapon;
-    return out;
+    return std::make_shared<Mage>(*this);
 }
 
 int Mage::Fireball(std::shared_ptr<Entity>& e)
@@ -31,8 +22,9 @@ int Mage::Fireball(std::shared_ptr<Entity>& e)
         std::cout<<"It Missed!\n";
         return 1;
     }
-    e->HP_Depletion(std::max(0,5*NormalAttackStrength()-e->NormalAttackDefense()));
-    std::cout<<"It has dealt "<<std::max(0,5*NormalAttackStrength()-e->NormalAttackDefense())<<" Damage\n";
+    int attackDamage=std::max(0,5*NormalAttackStrength()-e->NormalAttackDefense());
+    e->HP_Depletion(attackDamage);
+    std::cout<<"It has dealt "<<attackDamage<<" Damage\n";
     e->Burn();
     return 1;
 }
@@ -45,8 +37,9 @@ void Mage::NormalAttack(std::shared_ptr<Entity>& e)
         std::cout<<"It missed!\n";
         return;
     }
-    e->HP_Depletion(std::max(0,NormalAttackStrength()-e->NormalAttackDefense()));
-    std::cout<<"It has dealt "<<std::max(0,NormalAttackStrength()-e->NormalAttackDefense())<<" Damage\n";
+    int attackDamage=std::max(0,NormalAttackStrength()-e->NormalAttackDefense());
+    e->HP_Depletion(attackDamage);
+    std::cout<<"It has dealt "<<attackDamage<<" Damage\n";
 }
 
 int Mage::Stun(std::shared_ptr<Entity>& e)
@@ -114,7 +107,7 @@ void Mage::ApplyEffects()
 
 void Mage::ResetStats()
 {
-    HP_Fill();
+    Player::ResetStats();
     DEF=2;
     MANA=50;
     shieldTime=0;
@@ -131,4 +124,19 @@ void Mage::ShowStats()
     std::cout<<"Mana: "<<MANA<<"/50"<<"\n";
     std::cout<<"Your Money: "<<currency<<"\n";
     std::cout<<weapon;
+}
+
+void Mage::ShowAvailableAttacks()
+{
+    Player::ShowAvailableAttacks();
+}
+
+void Mage::ShowAvailableActions()
+{
+    std::cout<<"Please choose an action:\n";
+    std::cout<<"1.Punch\n";
+    std::cout<<"2.Use Weapon\n";
+    std::cout<<"3.Use Spell\n";
+    std::cout<<"4.Check Current Stats\n";
+    std::cout<<"5.Flee\n";
 }

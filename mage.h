@@ -9,15 +9,17 @@ class Mage : public Player
     int shieldTime=0;
 public:
     explicit Mage(const std::string &Name_ = "", int HP_ = 150, int MaxHP_ = 150, int STR_ = 2, int DEF_ = 2, int AGI_ = 2, int MANA_=50);
-    friend std::ostream &operator<<(std::ostream &out, const Mage &p);
+    std::shared_ptr<Entity> clone() const override;
     int Stun(std::shared_ptr<Entity>& e);
     void NormalAttack (std::shared_ptr<Entity>& e) override;
     int Fireball(std::shared_ptr<Entity>& e);
     int MagicShield();
     int Heal();
-    void ShowStats();
+    void ShowStats() override;
     void ApplyEffects() override;
     void ResetStats() override;
+    void ShowAvailableAttacks() override;
+    void ShowAvailableActions() override;
 };
 
 #endif //PROIECTOOP_MAGE_H
