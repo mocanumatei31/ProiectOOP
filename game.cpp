@@ -10,6 +10,7 @@
 #include <iostream>
 #include <memory>
 #include <string>
+#include <stdexcept>
 
 Game::Game()=default;
 Game::~Game()= default;
@@ -45,11 +46,11 @@ void Game::CharacterCreation()
         {
             op=std::stoi(op_);
         }
-        catch(std::invalid_argument& err)
+        catch(std::invalid_argument&)
         {
             op=-1;
         }
-        catch(std::out_of_range& err)
+        catch(std::out_of_range&)
         {
             op=-1;
         }
@@ -102,11 +103,11 @@ void Game::CreateEnemy()
         {
             op=std::stoi(op_);
         }
-        catch(std::invalid_argument& err)
+        catch(std::invalid_argument&)
         {
             op=-1;
         }
-        catch(std::out_of_range& err)
+        catch(std::out_of_range&)
         {
             op=-1;
         }
@@ -133,11 +134,11 @@ void Game::CreateEnemy()
                     HP_=std::stoi(HPstring);
                     enemybuilder.HP(HP_);
                 }
-                catch(std::invalid_argument& err)
+                catch(std::invalid_argument&)
                 {
                     std::cout<<"Invalid Input\n";
                 }
-                catch(std::out_of_range& err)
+                catch(std::out_of_range&)
                 {
                     std::cout<<"Invalid Input\n";
                 }
@@ -155,11 +156,11 @@ void Game::CreateEnemy()
                     if(STR_<0 ||STR_>10) std::cout<<"Strength Can Only Be a Number From 0-10\n";
                     else enemybuilder.STR(STR_);
                 }
-                catch(std::invalid_argument& err)
+                catch(std::invalid_argument&)
                 {
                     std::cout<<"Invalid Input\n";
                 }
-                catch(std::out_of_range& err)
+                catch(std::out_of_range&)
                 {
                     std::cout<<"Invalid Input\n";
                 }
@@ -177,11 +178,11 @@ void Game::CreateEnemy()
                     if(DEF_<0 || DEF_>10) std::cout<<"Defence Can Only Be a Number From 0-10\n";
                     else enemybuilder.DEF(DEF_);
                 }
-                catch(std::invalid_argument& err)
+                catch(std::invalid_argument&)
                 {
                     std::cout<<"Invalid Input\n";
                 }
-                catch(std::out_of_range& err)
+                catch(std::out_of_range&)
                 {
                     std::cout<<"Invalid Input\n";
                 }
@@ -199,11 +200,11 @@ void Game::CreateEnemy()
                     if(AGI_<0 ||AGI_>10) std::cout<<"Agility Can Only Be a Number From 0-10\n";
                     else enemybuilder.AGI(AGI_);
                 }
-                catch(std::invalid_argument& err)
+                catch(std::invalid_argument&)
                 {
                     std::cout<<"Invalid Input\n";
                 }
-                catch(std::out_of_range& err)
+                catch(std::out_of_range&)
                 {
                     std::cout<<"Invalid Input\n";
                 }
@@ -240,11 +241,11 @@ std::shared_ptr<Enemy> Game::EnemySelect()
             {
                 op=std::stoi(op_);
             }
-            catch(std::invalid_argument& err)
+            catch(std::invalid_argument&)
             {
                 op=-1;
             }
-            catch(std::out_of_range& err)
+            catch(std::out_of_range&)
             {
                 op=-1;
             }
@@ -271,11 +272,11 @@ void Game::Battle()
         {
             op=std::stoi(op_);
         }
-        catch(std::invalid_argument& err)
+        catch(std::invalid_argument&)
         {
             op=-1;
         }
-        catch(std::out_of_range& err)
+        catch(std::out_of_range&)
         {
             op=-1;
         }
@@ -307,11 +308,11 @@ void Game::Battle()
             {
                 op = std::stoi(op_);
             }
-            catch (std::invalid_argument &err)
+            catch (std::invalid_argument&)
             {
                 op = -1;
             }
-            catch (std::out_of_range &err)
+            catch (std::out_of_range&)
             {
                 op = -1;
             }
@@ -335,11 +336,11 @@ void Game::Battle()
                     {
                         attackType = std::stoi(attackType_);
                     }
-                    catch (std::invalid_argument &err)
+                    catch (std::invalid_argument&)
                     {
                         attackType = -1;
                     }
-                    catch (std::out_of_range &err)
+                    catch (std::out_of_range&)
                     {
                         attackType = -1;
                     }
@@ -420,11 +421,11 @@ void Game::Battle()
                             {
                                 spellType = std::stoi(spellType_);
                             }
-                            catch (std::invalid_argument &err)
+                            catch (std::invalid_argument&)
                             {
                                 spellType = -1;
                             }
-                            catch (std::out_of_range &err)
+                            catch (std::out_of_range&)
                             {
                                 spellType = -1;
                             }
@@ -535,11 +536,11 @@ void Game::Shop()
         {
             op=std::stoi(op_);
         }
-        catch(std::invalid_argument& err)
+        catch(std::invalid_argument&)
         {
             op=-1;
         }
-        catch(std::out_of_range& err)
+        catch(std::out_of_range&)
         {
             op=-1;
         }
@@ -639,11 +640,11 @@ void Game::HubArea()
         {
             op=std::stoi(op_);
         }
-        catch(std::invalid_argument& err)
+        catch(std::invalid_argument&)
         {
             op=-1;
         }
-        catch(std::out_of_range& err)
+        catch(std::out_of_range&)
         {
             op=-1;
         }
