@@ -1,6 +1,7 @@
 #ifndef PROIECTOOP_GAME_H
 #define PROIECTOOP_GAME_H
 #include "player.h"
+#include "enemy.h"
 #include <memory>
 #include <vector>
 

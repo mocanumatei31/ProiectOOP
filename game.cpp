@@ -6,9 +6,10 @@
 #include "enemy.h"
 #include "exceptions.h"
 #include "weapon.h"
+#include "entity.h"
 #include <iostream>
 #include <memory>
-#include<string>
+#include <string>
 
 Game::Game()=default;
 Game::~Game()= default;
