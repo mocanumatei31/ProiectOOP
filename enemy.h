@@ -3,6 +3,7 @@
 
 #include "entity.h"
 #include <iostream>
+#include<memory>
 
 class Enemy:public Entity
 {

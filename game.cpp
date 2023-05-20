@@ -8,6 +8,7 @@
 #include "weapon.h"
 #include <iostream>
 #include <memory>
+#include<string>
 
 Game::Game()=default;
 Game::~Game()= default;
@@ -222,13 +223,14 @@ void Game::CreateEnemy()
 
 std::shared_ptr<Enemy> Game::EnemySelect()
 {
+    int length=(int)enemy_list.size();
     if(curr_level<=4) return enemy_list[curr_level];
     else
     {
         while(true)
         {
             std::cout<<"Please Choose an Enemy to Fight\n";
-            for(int i=0;i<enemy_list.size();i++)
+            for(int i=0;i<length;i++)
                 std::cout<<i+1<<"."<<enemy_list[i]->get_name()<<"\n";
             std::string op_;
             int op;
@@ -245,7 +247,7 @@ std::shared_ptr<Enemy> Game::EnemySelect()
             {
                 op=-1;
             }
-            if(op<1 || op>enemy_list.size()) std::cout<<"Invalid Input\n";
+            if(op<1 || op>length) std::cout<<"Invalid Input\n";
             else return enemy_list[op-1];
         }
     }

@@ -1,4 +1,5 @@
 #include <iostream>
+#include <memory>
 #include "entity.h"
 
 Entity::Entity(const std::string &Name_, int HP_, int MaxHP_, int STR_, int DEF_, int AGI_): Name(Name_), HP(HP_), MaxHP(MaxHP_), STR(STR_), DEF(DEF_) ,AGI(AGI_){}
