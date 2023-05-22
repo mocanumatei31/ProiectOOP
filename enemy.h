@@ -11,10 +11,9 @@ class Enemy:public Entity
 public:
     std::shared_ptr<Entity> clone() const override;
     explicit Enemy(const std::string &Name_="", int HP_=100, int MaxHP_=100, int STR_=1, int DEF_=1, int AGI_=1);
-    friend std::ostream& operator <<(std::ostream& out, const Enemy& e);
     Enemy& operator=(const Enemy& other);
+    friend std::ostream& operator <<(std::ostream& out, const Enemy& e);
     ~Enemy() override;
-    std::string get_name();
 };
 
 class Enemy_Factory

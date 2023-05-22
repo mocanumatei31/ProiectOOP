@@ -29,6 +29,7 @@ public:
     virtual void ApplyEffects();
     void Burn();
     void StunDebuff();
+    std::string get_name();
 };
 
 #endif //PROIECTOOP_ENTITY_H

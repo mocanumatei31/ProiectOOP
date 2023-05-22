@@ -83,3 +83,8 @@ void Entity::ApplyEffects()
     burn=std::max(0,burn-1);
     if(stun) stun=false;
 }
+
+std::string Entity::get_name()
+{
+    return Name;
+}

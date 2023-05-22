@@ -2,6 +2,7 @@
 #include "enemy.h"
 #include "warrior.h"
 #include "mage.h"
+#include "rogue.h"
 #include "player.h"
 #include "enemy.h"
 #include "exceptions.h"
@@ -39,6 +40,7 @@ void Game::CharacterCreation()
         std::cout<<"Please choose a class:\n";
         std::cout<<"1.Warrior\n";
         std::cout<<"2.Mage\n";
+        std::cout<<"3.Rogue\n";
         int op;
         std::string op_;
         std::cin>>op_;
@@ -46,11 +48,7 @@ void Game::CharacterCreation()
         {
             op=std::stoi(op_);
         }
-        catch(std::invalid_argument&)
-        {
-            op=-1;
-        }
-        catch(std::out_of_range&)
+        catch(std::logic_error&)
         {
             op=-1;
         }
@@ -66,11 +64,16 @@ void Game::CharacterCreation()
                 player=std::make_shared<Mage>(Mage());
                 break;
             }
+            case 3:
+            {
+                player=std::make_shared<Rogue>(Rogue());
+                break;
+            }
             default:
                 std::cout<<"Invalid Input\n";
                 break;
         }
-        if(op==1 || op==2) break;
+        if(op==1 || op==2 || op==3) break;
     }
     player->NameCharacter(phname);
     std::cout<<"This is your profile:\n";
@@ -102,123 +105,75 @@ void Game::CreateEnemy()
         try
         {
             op=std::stoi(op_);
-        }
-        catch(std::invalid_argument&)
-        {
-            op=-1;
-        }
-        catch(std::out_of_range&)
-        {
-            op=-1;
-        }
-        switch(op)
-        {
-            case 1:
-                enemybuilder.ShowCurrentState();
-                break;
-            case 2:
+            switch(op)
             {
-                std::cout<<"Please Enter the New Name:\n";
-                std::cin>>Name;
-                enemybuilder.Name(Name);
-                break;
-            }
-            case 3:
-            {
-                int HP_;
-                std::string HPstring;
-                std::cout<<"Please Enter the New HP Value:\n";
-                std::cin>>HPstring;
-                try
+                case 1:
+                    enemybuilder.ShowCurrentState();
+                    break;
+                case 2:
                 {
+                    std::cout<<"Please Enter the New Name:\n";
+                    std::cin>>Name;
+                    enemybuilder.Name(Name);
+                    break;
+                }
+                case 3:
+                {
+                    int HP_;
+                    std::string HPstring;
+                    std::cout<<"Please Enter the New HP Value:\n";
+                    std::cin>>HPstring;
                     HP_=std::stoi(HPstring);
                     enemybuilder.HP(HP_);
+                    break;
                 }
-                catch(std::invalid_argument&)
+                case 4:
                 {
-                    std::cout<<"Invalid Input\n";
-                }
-                catch(std::out_of_range&)
-                {
-                    std::cout<<"Invalid Input\n";
-                }
-                break;
-            }
-            case 4:
-            {
-                int STR_;
-                std::string STRstring;
-                std::cout<<"Please Enter the New Strength Value:\n";
-                std::cin>>STRstring;
-                try
-                {
+                    int STR_;
+                    std::string STRstring;
+                    std::cout<<"Please Enter the New Strength Value:\n";
+                    std::cin>>STRstring;
                     STR_=std::stoi(STRstring);
                     if(STR_<0 ||STR_>10) std::cout<<"Strength Can Only Be a Number From 0-10\n";
                     else enemybuilder.STR(STR_);
+                    break;
                 }
-                catch(std::invalid_argument&)
+                case 5:
                 {
-                    std::cout<<"Invalid Input\n";
-                }
-                catch(std::out_of_range&)
-                {
-                    std::cout<<"Invalid Input\n";
-                }
-                break;
-            }
-            case 5:
-            {
-                int DEF_;
-                std::string DEFstring;
-                std::cout<<"Please Enter the New Defence Value:\n";
-                std::cin>>DEFstring;
-                try
-                {
+                    int DEF_;
+                    std::string DEFstring;
+                    std::cout<<"Please Enter the New Defence Value:\n";
+                    std::cin>>DEFstring;
                     DEF_=std::stoi(DEFstring);
                     if(DEF_<0 || DEF_>10) std::cout<<"Defence Can Only Be a Number From 0-10\n";
                     else enemybuilder.DEF(DEF_);
+                    break;
                 }
-                catch(std::invalid_argument&)
+                case 6:
                 {
-                    std::cout<<"Invalid Input\n";
-                }
-                catch(std::out_of_range&)
-                {
-                    std::cout<<"Invalid Input\n";
-                }
-                break;
-            }
-            case 6:
-            {
-                int AGI_;
-                std::string AGIstring;
-                std::cout<<"Please Enter the New Agility Value:\n";
-                std::cin>>AGIstring;
-                try
-                {
+                    int AGI_;
+                    std::string AGIstring;
+                    std::cout<<"Please Enter the New Agility Value:\n";
+                    std::cin>>AGIstring;
                     AGI_=std::stoi(AGIstring);
                     if(AGI_<0 ||AGI_>10) std::cout<<"Agility Can Only Be a Number From 0-10\n";
                     else enemybuilder.AGI(AGI_);
+                    break;
                 }
-                catch(std::invalid_argument&)
-                {
+                case 7:
+                    enemy_list.push_back(enemybuilder.build());
+                    std::cout<<"Enemy Saved.\n";
+                    return;
+                case 8:
+                    return;
+                default:
                     std::cout<<"Invalid Input\n";
-                }
-                catch(std::out_of_range&)
-                {
-                    std::cout<<"Invalid Input\n";
-                }
-                break;
+                    break;
             }
-            case 7:
-                enemy_list.push_back(enemybuilder.build());
-                std::cout<<"Enemy Saved.\n";
-                return;
-            case 8:
-                return;
-            default:
-                std::cout<<"Invalid Input\n";
-                break;
+        }
+        catch(std::logic_error&)
+        {
+            std::cout<<"Invalid Input\n";
         }
     }
 }
@@ -241,11 +196,7 @@ std::shared_ptr<Enemy> Game::EnemySelect()
             {
                 op=std::stoi(op_);
             }
-            catch(std::invalid_argument&)
-            {
-                op=-1;
-            }
-            catch(std::out_of_range&)
+            catch(std::logic_error&)
             {
                 op=-1;
             }
@@ -272,11 +223,7 @@ void Game::Battle()
         {
             op=std::stoi(op_);
         }
-        catch(std::invalid_argument&)
-        {
-            op=-1;
-        }
-        catch(std::out_of_range&)
+        catch(std::logic_error&)
         {
             op=-1;
         }
@@ -308,11 +255,7 @@ void Game::Battle()
             {
                 op = std::stoi(op_);
             }
-            catch (std::invalid_argument&)
-            {
-                op = -1;
-            }
-            catch (std::out_of_range&)
+            catch (std::logic_error&)
             {
                 op = -1;
             }
@@ -335,71 +278,52 @@ void Game::Battle()
                     try
                     {
                         attackType = std::stoi(attackType_);
-                    }
-                    catch (std::invalid_argument&)
-                    {
-                        attackType = -1;
-                    }
-                    catch (std::out_of_range&)
-                    {
-                        attackType = -1;
-                    }
-                    switch (attackType)
-                    {
-                        case 1:
+                        switch (attackType)
                         {
-                            std::shared_ptr<Entity> ph = enemy;
-                            try
-                            {
-                                player->LightWeaponAttack(ph);
-                                checkWeapon=true;
-                            }
-                            catch(WeaponError& err)
-                            {
-                                std::cout<<err.what();
-                            }
-                            break;
-                        }
-                        case 2:
-                        {
-                            std::shared_ptr<Entity> ph = enemy;
-                            try
-                            {
-                                player->NormalWeaponAttack(ph);
-                                checkWeapon=true;
-                            }
-                            catch(WeaponError& err)
-                            {
-                                std::cout<<err.what();
-                            }
-                            break;
-                        }
-                        case 3:
-                        {
-                            if (auto warrior = std::dynamic_pointer_cast<Warrior>(player))
+                            case 1:
                             {
                                 std::shared_ptr<Entity> ph = enemy;
-                                try
-                                {
-                                    warrior->HeavyWeaponAttack(ph);
-                                    checkWeapon=true;
-                                }
-                                catch(WeaponError& err)
-                                {
-                                    std::cout<<err.what();
-                                }
+                                player->LightWeaponAttack(ph);
+                                checkWeapon = true;
+                                break;
                             }
-                            else
+                            case 2:
                             {
+                                std::shared_ptr<Entity> ph = enemy;
+                                player->NormalWeaponAttack(ph);
+                                checkWeapon = true;
+                                break;
+                            }
+                            case 3:
+                            {
+                                if (auto warrior = std::dynamic_pointer_cast<Warrior>(player))
+                                {
+                                    std::shared_ptr<Entity> ph = enemy;
+                                    warrior->HeavyWeaponAttack(ph);
+                                    checkWeapon = true;
+                                }
+                                else
+                                {
+                                    invalid = true;
+                                    std::cout << "Invalid Input\n";
+                                }
+                                break;
+                            }
+                            default:
                                 invalid = true;
                                 std::cout << "Invalid Input\n";
-                            }
-                            break;
+                                break;
                         }
-                        default:
-                            invalid = true;
-                            std::cout << "Invalid Input\n";
-                            break;
+                    }
+                    catch(std::logic_error&)
+                    {
+                        std::cout<<"Invalid Input\n";
+                        invalid=true;
+                    }
+                    catch (WeaponError &err)
+                    {
+                        std::cout << err.what();
+                        invalid=true;
                     }
                     break;
                 }
@@ -421,11 +345,7 @@ void Game::Battle()
                             {
                                 spellType = std::stoi(spellType_);
                             }
-                            catch (std::invalid_argument&)
-                            {
-                                spellType = -1;
-                            }
-                            catch (std::out_of_range&)
+                            catch (std::logic_error&)
                             {
                                 spellType = -1;
                             }
@@ -534,92 +454,57 @@ void Game::Shop()
         std::cin>>op_;
         try
         {
-            op=std::stoi(op_);
-        }
-        catch(std::invalid_argument&)
-        {
-            op=-1;
-        }
-        catch(std::out_of_range&)
-        {
-            op=-1;
-        }
-        switch(op)
-        {
-            case 1:
+            op = std::stoi(op_);
+            switch (op)
             {
-                try
+                case 1:
                 {
                     player->SpendCurrency(100);
                     player->WeaponChange(Weapon_Factory::dagger());
                     std::cout << "You bought a Dagger\n";
+                    break;
                 }
-                catch (CurrencyError& err)
-                {
-                    std::cout<<err.what();
-                }
-                break;
-            }
-            case 2:
-            {
-                try
+                case 2:
                 {
                     player->SpendCurrency(175);
                     player->WeaponChange(Weapon_Factory::spear());
                     std::cout << "You bought a Spear\n";
+                    break;
                 }
-                catch (CurrencyError& err)
-                {
-                    std::cout<<err.what();
-                }
-                break;
-            }
-            case 3:
-            {
-                try
+                case 3:
                 {
                     player->SpendCurrency(250);
                     player->WeaponChange(Weapon_Factory::sword());
                     std::cout << "You bought a Sword\n";
+                    break;
                 }
-                catch (CurrencyError& err)
-                {
-                    std::cout<<err.what();
-                }
-                break;
-            }
-            case 4:
-            {
-                try
+                case 4:
                 {
                     player->SpendCurrency(350);
                     player->WeaponChange(Weapon_Factory::longsword());
                     std::cout << "You bought a Longsword\n";
+                    break;
                 }
-                catch (CurrencyError& err)
-                {
-                    std::cout<<err.what();
-                }
-                break;
-            }
-            case 5:
-            {
-                try
+                case 5:
                 {
                     player->SpendCurrency(425);
                     player->WeaponChange(Weapon_Factory::mace());
                     std::cout << "You bought a Mace\n";
+                    break;
                 }
-                catch (CurrencyError& err)
-                {
-                    std::cout<<err.what();
-                }
-                break;
+                case 6:
+                    return;
+                default:
+                    std::cout << "Invalid input\n";
             }
-            case 6:
-                return;
-            default:
-                std::cout<<"Invalid input\n";
+        }
+        catch(std::logic_error&)
+        {
+            std::cout<<"Invalid Input\n";
+        }
+        catch (CurrencyError &err)
+        {
+            std::cout << err.what();
         }
     }
 }
@@ -640,11 +525,7 @@ void Game::HubArea()
         {
             op=std::stoi(op_);
         }
-        catch(std::invalid_argument&)
-        {
-            op=-1;
-        }
-        catch(std::out_of_range&)
+        catch(std::logic_error&)
         {
             op=-1;
         }

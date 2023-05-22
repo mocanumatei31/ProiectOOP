@@ -2,6 +2,7 @@
 #include "enemy.h"
 
 Enemy::Enemy(const std::string &Name_, int HP_, int MaxHP_, int STR_, int DEF_, int AGI_):Entity(Name_, HP_, MaxHP_, STR_, DEF_, AGI_){}
+
 std::ostream& operator <<(std::ostream& out, const Enemy& e)
 {
     out<<e.Name<<"'s stats:\n";
@@ -11,6 +12,7 @@ std::ostream& operator <<(std::ostream& out, const Enemy& e)
     out<<"Agility: "<<e.AGI<<"\n";
     return out;
 }
+
 std::shared_ptr<Entity> Enemy::clone() const
 {
     return std::make_shared<Enemy>(*this);
@@ -25,11 +27,6 @@ Enemy& Enemy::operator=(const Enemy& other)
     return *this;
 }
 Enemy::~Enemy()= default;
-
-std::string Enemy::get_name()
-{
-    return Name;
-}
 
 Enemy Enemy_Factory::troll(){ return Enemy("Troll",1000,1000,9,8,1);}
 Enemy Enemy_Factory::ogre(){ return Enemy("Ogre",750,750,4,7,3);}
