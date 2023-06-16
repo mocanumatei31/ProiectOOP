@@ -2,6 +2,7 @@
 #include "entity.h"
 #include "player.h"
 #include "exceptions.h"
+#include "weapon.h"
 
 Player::Player(const std::string& Name_, int HP_, int MaxHP_, int STR_, int DEF_, int AGI_):Entity(Name_, HP_, MaxHP_, STR_, DEF_, AGI_){}
 
@@ -59,7 +60,7 @@ void Player::LightWeaponAttack(std::shared_ptr<Entity>& e)
     weapon.ConditionDecrease(3);
 }
 
-void Player::WeaponChange(const Weapon &newWeapon)
+void Player::WeaponChange(const Weapon<int> &newWeapon)
 {
     weapon=newWeapon;
 }

@@ -80,7 +80,7 @@ endfunction()
 ###############################################################################
 
 # NOTE: update executable name in .github/workflows/cmake.yml:25 when changing name here
-add_executable(${PROJECT_NAME} main.cpp player.h player.cpp weapon.cpp weapon.h enemy.h enemy.cpp game.cpp game.h entity.h entity.cpp mage.h mage.cpp warrior.h warrior.cpp exceptions.h exceptions.cpp rogue.cpp rogue.h)
+add_executable(${PROJECT_NAME} main.cpp player.h player.cpp weapon.h weapon.cpp enemy.h enemy.cpp game.cpp game.h entity.h entity.cpp mage.h mage.cpp warrior.h warrior.cpp exceptions.h exceptions.cpp rogue.cpp rogue.h)
 
 ###############################################################################
 

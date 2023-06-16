@@ -8,7 +8,7 @@
 class Player:public Entity
 {
 protected:
-    Weapon weapon;//Player Character's Equipped Weapon
+    Weapon<int> weapon;//Player Character's Equipped Weapon
     int currency = 0;//Player Character's Money
     Player(const Player &other);
     Player& operator=(const Player& other);
@@ -19,7 +19,7 @@ public:
     ~Player() override;
     virtual void NormalWeaponAttack(std::shared_ptr<Entity>& e);
     virtual void LightWeaponAttack(std::shared_ptr<Entity>& e);
-    void WeaponChange(const Weapon &newWeapon);
+    void WeaponChange(const Weapon<int> &newWeapon);
     void GainCurrency(int x);
     void SpendCurrency(int x);
     void ShowCurrencyAmount() const;
