@@ -1,4 +1,3 @@
-#include <iostream>
 #include "weapon.h"
 
 template class Weapon<int>;
