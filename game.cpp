@@ -9,6 +9,7 @@
 #include "weapon.h"
 #include "entity.h"
 #include <iostream>
+#include <fstream>
 #include <memory>
 #include <string>
 #include <stdexcept>
@@ -21,18 +22,239 @@ Game& Game::get_game()
     return game;
 }
 
-void Game::InitializeEnemyList()
+void Game::InitializeEnemyList(const std::string& filename)
 {
+    enemy_list.clear();
     enemy_list.push_back(std::make_shared<Enemy>(Enemy_Factory::goblin()));
     enemy_list.push_back(std::make_shared<Enemy>(Enemy_Factory::ninja()));
     enemy_list.push_back(std::make_shared<Enemy>(Enemy_Factory::knight()));
     enemy_list.push_back(std::make_shared<Enemy>(Enemy_Factory::ogre()));
     enemy_list.push_back(std::make_shared<Enemy>(Enemy_Factory::troll()));
+    if(filename=="") return;
+    std::ifstream fin(filename);
+    std::string name;
+    fin>>name;
+    std::string type;
+    fin>>type;
+    int lvl;
+    fin>>lvl;
+    std::string weapon;
+    fin>>weapon;
+    int cond;
+    fin>>cond;
+    int currency;
+    fin>>currency;
+    if(lvl==5)
+    {
+        int len;
+        fin>>len;
+        for(int i=1;i<=len;i++)
+        {
+            int HP,STR,DEF,AGI;
+            fin>>name;
+            fin>>HP;
+            fin>>STR;
+            fin>>DEF;
+            fin>>AGI;
+            Enemy_Builder enemyBuilder;
+            enemy_list.push_back(enemyBuilder.Name(name).HP(HP).STR(STR).DEF(DEF).AGI(AGI).build());
+        }
+    }
+}
+
+void Game::ChooseCharacter()
+{
+    while(true)
+    {
+        std::cout<<"Welcome, Adventurer. Is this your first time here?\n1.Yes (Create a new character)\n2.No (Load a save file)\n";
+        int choice;
+        std::string choice_;
+        std::cin>>choice_;
+        try
+        {
+            choice=std::stoi(choice_);
+        }
+        catch(std::logic_error&)
+        {
+            choice=-1;
+        }
+        switch(choice)
+        {
+            case 1:
+                CharacterCreation();
+                return;
+            case 2:
+                LoadCharacter(1);
+                return;
+            default:
+                std::cout<<"Invalid Input\n";
+                break;
+        }
+    }
+}
+
+void Game::LoadFile(const std::string& filename)
+{
+    std::ifstream fin(filename);
+    std::string name;
+    fin>>name;
+    std::string type;
+    fin>>type;
+    if(type=="Warrior") player=std::make_shared<Warrior>(Warrior());
+    else if(type=="Mage") player=std::make_shared<Mage>(Mage());
+    else player=std::make_shared<Rogue>(Rogue());
+    player->NameCharacter(name);
+    fin>>curr_level;
+    if(curr_level==5) beatDefaultEnemies=true;
+    else beatDefaultEnemies=false;
+    std::string weapon;
+    fin>>weapon;
+    Weapon<int>newWeapon;
+    if(weapon=="Dagger") newWeapon=Weapon_Factory::dagger();
+    else if(weapon=="Spear") newWeapon=Weapon_Factory::spear();
+    else if(weapon=="Sword") newWeapon=Weapon_Factory::sword();
+    else if(weapon=="Longsword") newWeapon=Weapon_Factory::longsword();
+    else if(weapon=="Mace") newWeapon=Weapon_Factory::mace();
+    int cond;
+    fin>>cond;
+    newWeapon.set_condition(cond);
+    int currency;
+    fin>>currency;
+    player->WeaponChange(newWeapon);
+    player->GainCurrency(currency);
+    fin.close();
+    InitializeEnemyList(filename);
+}
+
+void Game::LoadCharacter(int gameBegin)
+{
+    int op;
+    while (true)
+    {
+        std::cout << "Please Choose a Save Slot:\n";
+        std::cout << "1. " << FileOutput("../savedata/save1.txt");
+        std::cout << "2. " << FileOutput("../savedata/save2.txt");
+        std::cout << "3. " << FileOutput("../savedata/save3.txt");
+        std::cout << "4. " << FileOutput("../savedata/save4.txt");
+        std::cout << "5. " << FileOutput("../savedata/save5.txt");
+        if(gameBegin==1)std::cout << "6. Create a New Character\n";
+        std::string op_;
+        std::cin >> op_;
+        try
+        {
+            op = std::stoi(op_);
+        }
+        catch (std::logic_error &)
+        {
+            op = -1;
+        }
+        if((!isFileEmpty("../savedata/save"+ std::to_string(op)+".txt") && (op==1 || op==2 || op==3 || op==4 || op==5)) || (gameBegin==1 && op==6)) break;
+        std::cout<<"Invalid Input\n";
+    }
+    if(op==6)
+    {
+        CharacterCreation();
+        return;
+    }
+    LoadFile("../savedata/save"+ std::to_string(op)+".txt");
+}
+
+bool Game::isFileEmpty(const std::string& filename)
+{
+    std::ifstream f(filename);
+    return f.peek()==std::ifstream::traits_type::eof();
+}
+
+std::string Game::FileOutput(const std::string& filename)
+{
+    if(isFileEmpty(filename)) return "Empty Slot\n";
+    std::ifstream fin(filename);
+    std::string name;
+    fin>>name;
+    std::string type;
+    fin>>type;
+    int lvl;
+    fin>>lvl;
+    fin.close();
+    if(lvl<5) return name+ " (Class: "+type+") - Enemy: "+ std::to_string(lvl)+"\n";
+    return name+ " (Class: "+type+") - All Enemies Defeated\n";
+}
+
+void Game::WriteFile(const std::string& filename)
+{
+    std::ofstream fout(filename);
+    fout<<player->get_name()<<"\n";
+    if(std::dynamic_pointer_cast<Warrior>(player)) fout<<"Warrior\n";
+    else if(std::dynamic_pointer_cast<Mage>(player)) fout<<"Mage\n";
+    else fout<<"Rogue\n";
+    fout<<curr_level<<"\n";
+    fout<<player->get_weapontype()<<"\n";
+    fout<<player->get_weaponcondition()<<"\n";
+    fout<<player->get_currency()<<"\n";
+    int len=(int)enemy_list.size();
+    fout<<len-5<<"\n";
+    for(int i=5;i<len;i++)
+    {
+        fout<<enemy_list[i]->get_name()<<"\n";
+        fout<<enemy_list[i]->get_hp()<<"\n";
+        fout<<enemy_list[i]->get_str()<<"\n";
+        fout<<enemy_list[i]->get_def()<<"\n";
+        fout<<enemy_list[i]->get_agi()<<"\n";
+    }
+    fout.close();
+}
+
+void Game::SaveCharacter()
+{
+    while(true)
+    {
+        std::cout<<"Please Choose a Save Slot:\n";
+        std::cout<<"1. "<<FileOutput("../savedata/save1.txt");
+        std::cout<<"2. "<<FileOutput("../savedata/save2.txt");
+        std::cout<<"3. "<<FileOutput("../savedata/save3.txt");
+        std::cout<<"4. "<<FileOutput("../savedata/save4.txt");
+        std::cout<<"5. "<<FileOutput("../savedata/save5.txt");
+        std::cout<<"6. Go Back\n";
+        int op;
+        std::string op_;
+        std::cin>>op_;
+        try
+        {
+            op=std::stoi(op_);
+        }
+        catch(std::logic_error&)
+        {
+            op=-1;
+        }
+        switch(op)
+        {
+            case 1:
+                WriteFile("../savedata/save1.txt");
+                break;
+            case 2:
+                WriteFile("../savedata/save2.txt");
+                break;
+            case 3:
+                WriteFile("../savedata/save3.txt");
+                break;
+            case 4:
+                WriteFile("../savedata/save4.txt");
+                break;
+            case 5:
+                WriteFile("../savedata/save5.txt");
+                break;
+            case 6:
+                return;
+            default:
+                std::cout<<"Invalid Input\n";
+                break;
+        }
+    }
 }
 
 void Game::CharacterCreation()
 {
-    std::cout<<"Welcome, Adventurer. Please enter your name.\n";
+    std::cout<<"Please enter your name.\n";
     std::string phname;
     std::cin>>phname;
     while(true)
@@ -78,6 +300,7 @@ void Game::CharacterCreation()
     player->NameCharacter(phname);
     std::cout<<"This is your profile:\n";
     player->ShowStats();
+    InitializeEnemyList("");
 }
 
 void Game::CreateEnemy()
@@ -517,7 +740,9 @@ void Game::HubArea()
         std::cout<<"1.Arena\n";
         std::cout<<"2.Shop\n";
         if(beatDefaultEnemies) std::cout<<"3.Enemy Creation Lab\n";
-        std::cout<<"4.Leave\n";
+        std::cout<<"4.Save Progress\n";
+        std::cout<<"5.Load An Existing Save File\n";
+        std::cout<<"6.Leave\n";
         int op;
         std::string op_;
         std::cin>>op_;
@@ -545,6 +770,12 @@ void Game::HubArea()
                 else std::cout<<"Invalid Input\n";
                 break;
             case 4:
+                SaveCharacter();
+                break;
+            case 5:
+                LoadCharacter(0);
+                break;
+            case 6:
                 std::cout<<"Goodbye!\n";
                 return;
             default:

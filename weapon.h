@@ -16,6 +16,9 @@ public:
     Weapon& operator=(const Weapon& other);
     bool isFunctional() const;
     T AttackDamage() const;
+    T get_condition() const;
+    std::string get_type();
+    void set_condition(T x);
     void ConditionDecrease(int x);
 };
 
@@ -41,6 +44,21 @@ Weapon<T>& Weapon<T>::operator=(const Weapon& other)
     base_damage=other.base_damage;
     type=other.type;
     return *this;
+}
+template<typename T>
+T Weapon<T>::get_condition() const
+{
+    return condition;
+}
+template<typename T>
+std::string Weapon<T>::get_type()
+{
+    return type;
+}
+template<typename T>
+void Weapon<T>::set_condition(T x)
+{
+    condition=x;
 }
 template<typename T>
 bool Weapon<T>::isFunctional() const

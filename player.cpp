@@ -30,6 +30,23 @@ std::istream& operator >>(std::istream& in, Player& p)
 
 Player::~Player()= default;
 
+int Player::get_currency()
+{
+    return currency;
+}
+
+int Player::get_weaponcondition()
+{
+    return weapon.get_condition();
+}
+
+std::string Player::get_weapontype()
+{
+    return weapon.get_type();
+}
+
+
+
 void Player::NormalWeaponAttack(std::shared_ptr<Entity>& e)
 {
     if(!weapon.isFunctional()) throw WeaponError("You can't use a broken weapon\n");

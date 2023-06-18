@@ -20,6 +20,9 @@ public:
     virtual void NormalWeaponAttack(std::shared_ptr<Entity>& e);
     virtual void LightWeaponAttack(std::shared_ptr<Entity>& e);
     void WeaponChange(const Weapon<int> &newWeapon);
+    int get_currency();
+    int get_weaponcondition();
+    std::string get_weapontype();
     void GainCurrency(int x);
     void SpendCurrency(int x);
     void ShowCurrencyAmount() const;

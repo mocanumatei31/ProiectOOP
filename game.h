@@ -16,9 +16,16 @@ public:
     Game& operator=(const Game& other)=delete;
     ~Game();
     static Game& get_game();
+    void ChooseCharacter();
+    void LoadFile(const std::string& filename);
+    void LoadCharacter(int gameBegin);
+    bool isFileEmpty(const std::string& filename);
+    std::string FileOutput(const std::string& filename);
+    void WriteFile(const std::string& filename);
+    void SaveCharacter();
     void CharacterCreation();
     void CreateEnemy();
-    void InitializeEnemyList();
+    void InitializeEnemyList(const std::string& filename);
     std::shared_ptr<Enemy> EnemySelect();
     void Battle();
     void Shop();

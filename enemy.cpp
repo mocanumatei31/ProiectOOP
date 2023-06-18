@@ -13,6 +13,23 @@ std::ostream& operator <<(std::ostream& out, const Enemy& e)
     return out;
 }
 
+int Enemy::get_hp()
+{
+    return HP;
+}
+int Enemy::get_str()
+{
+    return STR;
+}
+int Enemy::get_def()
+{
+    return DEF;
+}
+int Enemy::get_agi()
+{
+    return AGI;
+}
+
 std::shared_ptr<Entity> Enemy::clone() const
 {
     return std::make_shared<Enemy>(*this);
