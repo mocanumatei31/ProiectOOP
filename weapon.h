@@ -19,7 +19,7 @@ public:
     T get_condition() const;
     std::string get_type();
     void set_condition(T x);
-    void ConditionDecrease(int x);
+    void ConditionDecrease(T x);
 };
 
 template<typename T>
@@ -71,7 +71,7 @@ T Weapon<T>::AttackDamage() const
     return base_damage - (100 - condition) * base_damage / 100;
 }
 template<typename T>
-void Weapon<T>::ConditionDecrease(int x)
+void Weapon<T>::ConditionDecrease(T x)
 {
     condition=std::max(0,condition-x);
 }

@@ -132,11 +132,11 @@ void Game::LoadCharacter(int gameBegin)
     while (true)
     {
         std::cout << "Please Choose a Save Slot:\n";
-        std::cout << "1. " << FileOutput("../savedata/save1.txt");
-        std::cout << "2. " << FileOutput("../savedata/save2.txt");
-        std::cout << "3. " << FileOutput("../savedata/save3.txt");
-        std::cout << "4. " << FileOutput("../savedata/save4.txt");
-        std::cout << "5. " << FileOutput("../savedata/save5.txt");
+        std::cout << "1. " << FileOutput("savedata/save1.txt");
+        std::cout << "2. " << FileOutput("savedata/save2.txt");
+        std::cout << "3. " << FileOutput("savedata/save3.txt");
+        std::cout << "4. " << FileOutput("savedata/save4.txt");
+        std::cout << "5. " << FileOutput("savedata/save5.txt");
         if(gameBegin==1)std::cout << "6. Create a New Character\n";
         std::string op_;
         std::cin >> op_;
@@ -148,7 +148,7 @@ void Game::LoadCharacter(int gameBegin)
         {
             op = -1;
         }
-        if((!isFileEmpty("../savedata/save"+ std::to_string(op)+".txt") && (op==1 || op==2 || op==3 || op==4 || op==5)) || (gameBegin==1 && op==6)) break;
+        if((!isFileEmpty("savedata/save"+ std::to_string(op)+".txt") && (op==1 || op==2 || op==3 || op==4 || op==5)) || (gameBegin==1 && op==6)) break;
         std::cout<<"Invalid Input\n";
     }
     if(op==6)
@@ -156,7 +156,7 @@ void Game::LoadCharacter(int gameBegin)
         CharacterCreation();
         return;
     }
-    LoadFile("../savedata/save"+ std::to_string(op)+".txt");
+    LoadFile("savedata/save"+ std::to_string(op)+".txt");
 }
 
 bool Game::isFileEmpty(const std::string& filename)
@@ -209,11 +209,11 @@ void Game::SaveCharacter()
     while(true)
     {
         std::cout<<"Please Choose a Save Slot:\n";
-        std::cout<<"1. "<<FileOutput("../savedata/save1.txt");
-        std::cout<<"2. "<<FileOutput("../savedata/save2.txt");
-        std::cout<<"3. "<<FileOutput("../savedata/save3.txt");
-        std::cout<<"4. "<<FileOutput("../savedata/save4.txt");
-        std::cout<<"5. "<<FileOutput("../savedata/save5.txt");
+        std::cout<<"1. "<<FileOutput("savedata/save1.txt");
+        std::cout<<"2. "<<FileOutput("savedata/save2.txt");
+        std::cout<<"3. "<<FileOutput("savedata/save3.txt");
+        std::cout<<"4. "<<FileOutput("savedata/save4.txt");
+        std::cout<<"5. "<<FileOutput("savedata/save5.txt");
         std::cout<<"6. Go Back\n";
         int op;
         std::string op_;
@@ -229,19 +229,19 @@ void Game::SaveCharacter()
         switch(op)
         {
             case 1:
-                WriteFile("../savedata/save1.txt");
+                WriteFile("savedata/save1.txt");
                 break;
             case 2:
-                WriteFile("../savedata/save2.txt");
+                WriteFile("savedata/save2.txt");
                 break;
             case 3:
-                WriteFile("../savedata/save3.txt");
+                WriteFile("savedata/save3.txt");
                 break;
             case 4:
-                WriteFile("../savedata/save4.txt");
+                WriteFile("savedata/save4.txt");
                 break;
             case 5:
-                WriteFile("../savedata/save5.txt");
+                WriteFile("savedata/save5.txt");
                 break;
             case 6:
                 return;
@@ -784,4 +784,3 @@ void Game::HubArea()
         }
     }
 }
-

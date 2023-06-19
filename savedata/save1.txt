@@ -1,6 +1,7 @@
 Messi
 Warrior
-3
+4
 Longsword
-75
-125
+25
+525
+0
