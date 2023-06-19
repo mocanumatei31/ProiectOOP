@@ -4,11 +4,7 @@
 #include "exceptions.h"
 #include "weapon.h"
 
-Player::Player(const std::string& Name_, int HP_, int MaxHP_, int STR_, int DEF_, int AGI_):Entity(Name_, HP_, MaxHP_, STR_, DEF_, AGI_)
-{
-    rangedWeapon=Weapon_Factory::bow();
-    meleeWeapon=Weapon_Factory::dagger();
-}
+Player::Player(const std::string& Name_, int HP_, int MaxHP_, int STR_, int DEF_, int AGI_):Entity(Name_, HP_, MaxHP_, STR_, DEF_, AGI_){}
 
 Player::Player(const Player &other)=default;
 Player& Player::operator=(const Player& other)=default;
