@@ -123,12 +123,8 @@ void Mage::ShowStats()
     std::cout<<"Agility: "<<AGI<<"\n";
     std::cout<<"Mana: "<<MANA<<"/50"<<"\n";
     std::cout<<"Your Money: "<<currency<<"\n";
-    std::cout<<weapon;
-}
-
-void Mage::ShowAvailableAttacks()
-{
-    Player::ShowAvailableAttacks();
+    meleeWeapon.ShowStats();
+    rangedWeapon.ShowStats();
 }
 
 void Mage::ShowAvailableActions()
@@ -137,6 +133,7 @@ void Mage::ShowAvailableActions()
     std::cout<<"1.Punch\n";
     std::cout<<"2.Use Weapon\n";
     std::cout<<"3.Use Spell\n";
-    std::cout<<"4.Check Current Stats\n";
-    std::cout<<"5.Flee\n";
+    std::cout<<"4.Use Ranged Attack\n";
+    std::cout<<"5.Check Current Stats\n";
+    std::cout<<"6.Flee\n";
 }

@@ -24,7 +24,7 @@ void Warrior::NormalAttack(std::shared_ptr<Entity>& e)
 
 void Warrior::NormalWeaponAttack(std::shared_ptr<Entity>& e)
 {
-    if(!weapon.isFunctional()) throw WeaponError("You can't use a broken weapon\n");
+    if(!meleeWeapon.isFunctional()) throw WeaponError("You can't use a broken weapon\n");
     std::cout<<Name<<" used Weapon Attack\n";
     if(e->hasAvoidedAttack())
     {
@@ -32,14 +32,14 @@ void Warrior::NormalWeaponAttack(std::shared_ptr<Entity>& e)
         return;
     }
     if(rageMeter<5 && !rage) rageMeter++;
-    e->HP_Depletion(std::max(0,weapon.AttackDamage()+50*(int)rage-e->NormalAttackDefense()));
-    std::cout<<"It has dealt "<<std::max(0,weapon.AttackDamage()+50*(int)rage-e->NormalAttackDefense())<<" Damage\n";
-    weapon.ConditionDecrease(5);
+    e->HP_Depletion(std::max(0,meleeWeapon.AttackDamage()+50*(int)rage-e->NormalAttackDefense()));
+    std::cout<<"It has dealt "<<std::max(0,meleeWeapon.AttackDamage()+50*(int)rage-e->NormalAttackDefense())<<" Damage\n";
+    meleeWeapon.ConditionDecrease(5);
 }
 
 void Warrior::LightWeaponAttack(std::shared_ptr<Entity>& e)
 {
-    if(!weapon.isFunctional()) throw WeaponError("You can't use a broken weapon\n");
+    if(!meleeWeapon.isFunctional()) throw WeaponError("You can't use a broken weapon\n");
     std::cout<<Name<<" used Light Weapon Attack\n";
     if(e->hasAvoidedAttack())
     {
@@ -47,14 +47,14 @@ void Warrior::LightWeaponAttack(std::shared_ptr<Entity>& e)
         return;
     }
     if(rageMeter<5 && !rage) rageMeter++;
-    e->HP_Depletion(std::max(0,weapon.AttackDamage()/3*2+50*(int)rage-e->NormalAttackDefense()));
-    std::cout<<"It has dealt "<<std::max(0,weapon.AttackDamage()/3*2+50*(int)rage-e->NormalAttackDefense())<<" Damage\n";
-    weapon.ConditionDecrease(3);
+    e->HP_Depletion(std::max(0,meleeWeapon.AttackDamage()/3*2+50*(int)rage-e->NormalAttackDefense()));
+    std::cout<<"It has dealt "<<std::max(0,meleeWeapon.AttackDamage()/3*2+50*(int)rage-e->NormalAttackDefense())<<" Damage\n";
+    meleeWeapon.ConditionDecrease(3);
 
 }
 void Warrior::HeavyWeaponAttack(std::shared_ptr<Entity>& e)
 {
-    if(!weapon.isFunctional()) throw WeaponError("You can't use a broken weapon\n");
+    if(!meleeWeapon.isFunctional()) throw WeaponError("You can't use a broken weapon\n");
     std::cout<<Name<<" used Heavy Weapon Attack\n";
     if(e->hasAvoidedAttack())
     {
@@ -62,10 +62,10 @@ void Warrior::HeavyWeaponAttack(std::shared_ptr<Entity>& e)
         return;
     }
     if(rageMeter<5 && !rage) rageMeter=std::min(5,rageMeter+2);
-    int attackDamage=std::max(0,weapon.AttackDamage()*3/2+50*(int)rage-e->NormalAttackDefense());
+    int attackDamage=std::max(0,meleeWeapon.AttackDamage()*3/2+50*(int)rage-e->NormalAttackDefense());
     e->HP_Depletion(attackDamage);
     std::cout<<"It has dealt "<<attackDamage<<" Damage\n";
-    weapon.ConditionDecrease(10);
+    meleeWeapon.ConditionDecrease(10);
 }
 
 bool Warrior::isRageFilled()
@@ -107,7 +107,8 @@ void Warrior::ShowStats()
     std::cout<<"Agility: "<<AGI<<"\n";
     std::cout<<"Rage Meter: "<<rageMeter<<"/5"<<"\n";
     std::cout<<"Your Money: "<<currency<<"\n";
-    std::cout<<weapon;
+    meleeWeapon.ShowStats();
+    rangedWeapon.ShowStats();
 }
 
 void Warrior::ShowAvailableAttacks()
@@ -119,8 +120,9 @@ void Warrior::ShowAvailableActions()
 {
     std::cout<<"Please choose an action:\n";
     std::cout<<"1.Punch\n";
-    std::cout<<"2.Use Weapon\n";
-    std::cout<<"4.Check Current Stats\n";
-    std::cout<<"5.Flee\n";
+    std::cout<<"2.Use Melee Weapon\n";
+    std::cout<<"4.Use Ranged Attack\n";
+    std::cout<<"5.Check Current Stats\n";
+    std::cout<<"6.Flee\n";
     if(isRageFilled())std::cout<<"Rage Meter is Full! Press 9 to unlock\n";
 }

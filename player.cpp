@@ -4,7 +4,11 @@
 #include "exceptions.h"
 #include "weapon.h"
 
-Player::Player(const std::string& Name_, int HP_, int MaxHP_, int STR_, int DEF_, int AGI_):Entity(Name_, HP_, MaxHP_, STR_, DEF_, AGI_){}
+Player::Player(const std::string& Name_, int HP_, int MaxHP_, int STR_, int DEF_, int AGI_):Entity(Name_, HP_, MaxHP_, STR_, DEF_, AGI_)
+{
+    rangedWeapon=Weapon_Factory::bow();
+    meleeWeapon=Weapon_Factory::dagger();
+}
 
 Player::Player(const Player &other)=default;
 Player& Player::operator=(const Player& other)=default;
@@ -17,7 +21,8 @@ std::ostream& operator <<(std::ostream& out, const Player& p)
     out<<"Defence: "<<p.DEF<<"\n";
     out<<"Agility: "<<p.AGI<<"\n";
     out<<"Your Money: "<<p.currency<<"\n";
-    out<<p.weapon;
+    p.meleeWeapon.ShowStats();
+    p.rangedWeapon.ShowStats();
     return out;
 }
 
@@ -30,56 +35,85 @@ std::istream& operator >>(std::istream& in, Player& p)
 
 Player::~Player()= default;
 
-int Player::get_currency()
+int Player::get_currency() const
 {
     return currency;
 }
 
 int Player::get_weaponcondition()
 {
-    return weapon.get_condition();
+    return meleeWeapon.get_condition();
 }
 
-std::string Player::get_weapontype()
+std::string Player::get_meleeweapontype()
 {
-    return weapon.get_type();
+    return meleeWeapon.get_type();
+}
+std::string Player::get_rangedweapontype()
+{
+    return rangedWeapon.get_type();
 }
 
+int Player::get_ammo()
+{
+    return rangedWeapon.get_ammo();
+}
 
 
 void Player::NormalWeaponAttack(std::shared_ptr<Entity>& e)
 {
-    if(!weapon.isFunctional()) throw WeaponError("You can't use a broken weapon\n");
+    if(!meleeWeapon.isFunctional()) throw WeaponError("You can't use a broken weapon\n");
     std::cout<<Name<<" used Weapon Attack\n";
     if(e->hasAvoidedAttack())
     {
         std::cout<<"It missed!\n";
         return;
     }
-    int attackDamage=std::max(0,weapon.AttackDamage()-e->NormalAttackDefense());
+    int attackDamage=std::max(0,meleeWeapon.AttackDamage()-e->NormalAttackDefense());
     e->HP_Depletion(attackDamage);
     std::cout<<"It has dealt "<<attackDamage<<" Damage\n";
-    weapon.ConditionDecrease(5);
+    meleeWeapon.ConditionDecrease(5);
 }
 
 void Player::LightWeaponAttack(std::shared_ptr<Entity>& e)
 {
-    if(!weapon.isFunctional()) throw WeaponError("You can't use a broken weapon\n");
+    if(!meleeWeapon.isFunctional()) throw WeaponError("You can't use a broken weapon\n");
     std::cout<<Name<<" used Light Weapon Attack\n";
     if(e->hasAvoidedAttack())
     {
         std::cout<<"It missed!\n";
         return;
     }
-    int attackDamage=std::max(0,weapon.AttackDamage()/3*2-e->NormalAttackDefense());
+    int attackDamage=std::max(0,meleeWeapon.AttackDamage()/3*2-e->NormalAttackDefense());
     e->HP_Depletion(attackDamage);
     std::cout<<"It has dealt "<<attackDamage<<" Damage\n";
-    weapon.ConditionDecrease(3);
+    meleeWeapon.ConditionDecrease(3);
 }
 
-void Player::WeaponChange(const Weapon<int> &newWeapon)
+void Player::MeleeWeaponChange(const MeleeWeapon& newWeapon)
 {
-    weapon=newWeapon;
+    meleeWeapon=newWeapon;
+}
+
+void Player::RangedWeaponChange(const RangedWeapon& newWeapon)
+{
+    rangedWeapon=newWeapon;
+}
+
+int Player::RangedAttack(std::shared_ptr<Entity>& e)
+{
+    if(!rangedWeapon.hasAmmo()) return 0;
+    std::cout<<Name<<" used Ranged Attack\n";
+    rangedWeapon.useAmmo();
+    if(e->hasAvoidedAttack())
+    {
+        std::cout<<"It missed!\n";
+        return 1;
+    }
+    int attackDamage=std::max(0,rangedWeapon.AttackDamage()-e->NormalAttackDefense());
+    e->HP_Depletion(attackDamage);
+    std::cout<<"It has dealt "<<attackDamage<<" Damage\n";
+    return 1;
 }
 
 void Player::GainCurrency(int x)
@@ -100,6 +134,7 @@ void Player::ShowCurrencyAmount() const
 
 void Player::ResetStats()
 {
+    rangedWeapon.ReplenishAmmo();
     HP_Fill();
 }
 

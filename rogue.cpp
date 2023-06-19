@@ -30,17 +30,17 @@ void Rogue::NormalAttack(std::shared_ptr<Entity>& e)
 
 void Rogue::NormalWeaponAttack(std::shared_ptr<Entity>& e)
 {
-    if(!weapon.isFunctional()) throw WeaponError("You can't use a broken weapon\n");
+    if(!meleeWeapon.isFunctional()) throw WeaponError("You can't use a broken weapon\n");
     std::cout<<Name<<" used Weapon Attack\n";
     if(e->hasAvoidedAttack())
     {
         std::cout<<"It missed!\n";
         return;
     }
-    int attackDamage=std::max(0,weapon.AttackDamage()-e->NormalAttackDefense());
+    int attackDamage=std::max(0,meleeWeapon.AttackDamage()-e->NormalAttackDefense());
     e->HP_Depletion(attackDamage);
     std::cout<<"It has dealt "<<attackDamage<<" Damage\n";
-    weapon.ConditionDecrease(5);
+    meleeWeapon.ConditionDecrease(5);
     int additionalSlashCheck=rand()%5;
     if(additionalSlashCheck<=1)
     {
@@ -52,17 +52,17 @@ void Rogue::NormalWeaponAttack(std::shared_ptr<Entity>& e)
 
 void Rogue::LightWeaponAttack(std::shared_ptr<Entity>& e)
 {
-    if(!weapon.isFunctional()) throw WeaponError("You can't use a broken weapon\n");
+    if(!meleeWeapon.isFunctional()) throw WeaponError("You can't use a broken weapon\n");
     std::cout<<Name<<" used Light Weapon Attack\n";
     if(e->hasAvoidedAttack())
     {
         std::cout<<"It missed!\n";
         return;
     }
-    int attackDamage=std::max(0,weapon.AttackDamage()/3*2-e->NormalAttackDefense());
+    int attackDamage=std::max(0,meleeWeapon.AttackDamage()/3*2-e->NormalAttackDefense());
     e->HP_Depletion(attackDamage);
     std::cout<<"It has dealt "<<attackDamage<<" Damage\n";
-    weapon.ConditionDecrease(3);
+    meleeWeapon.ConditionDecrease(3);
     int additionalSlashCheck=rand()%5;
     if(additionalSlashCheck<=1)
     {
@@ -77,11 +77,6 @@ void Rogue::ResetStats()
     Player::ResetStats();
 }
 
-void Rogue::ShowAvailableAttacks()
-{
-    Player::ShowAvailableAttacks();
-}
-
 void Rogue::ShowStats()
 {
     std::cout<<Name<<"'s stats:\n";
@@ -91,7 +86,8 @@ void Rogue::ShowStats()
     std::cout<<"Defence: "<<DEF<<"\n";
     std::cout<<"Agility: "<<AGI<<"\n";
     std::cout<<"Your Money: "<<currency<<"\n";
-    std::cout<<weapon;
+    meleeWeapon.ShowStats();
+    rangedWeapon.ShowStats();
 }
 
 void Rogue::ShowAvailableActions()
@@ -99,6 +95,7 @@ void Rogue::ShowAvailableActions()
     std::cout<<"Please choose an action:\n";
     std::cout<<"1.Punch\n";
     std::cout<<"2.Use Weapon\n";
-    std::cout<<"4.Check Current Stats\n";
-    std::cout<<"5.Flee\n";
+    std::cout<<"4.Use Ranged Attack\n";
+    std::cout<<"5.Check Current Stats\n";
+    std::cout<<"6.Flee\n";
 }

@@ -12,7 +12,6 @@ public:
     void NormalWeaponAttack(std::shared_ptr<Entity>& e) override;
     void LightWeaponAttack(std::shared_ptr<Entity>& e) override;
     void ResetStats() override;
-    void ShowAvailableAttacks() override;
     void ShowStats() override;
     void ShowAvailableActions() override;
 };

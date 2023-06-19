@@ -2,6 +2,7 @@ Messi
 Warrior
 4
 Longsword
-25
-525
+130
+Crossbow
+450
 0

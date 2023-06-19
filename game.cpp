@@ -42,6 +42,7 @@ void Game::InitializeEnemyList(const std::string& filename)
     fin>>weapon;
     int cond;
     fin>>cond;
+    fin>>weapon;
     int currency;
     fin>>currency;
     if(lvl==5)
@@ -109,7 +110,7 @@ void Game::LoadFile(const std::string& filename)
     else beatDefaultEnemies=false;
     std::string weapon;
     fin>>weapon;
-    Weapon<int>newWeapon;
+    MeleeWeapon newWeapon;
     if(weapon=="Dagger") newWeapon=Weapon_Factory::dagger();
     else if(weapon=="Spear") newWeapon=Weapon_Factory::spear();
     else if(weapon=="Sword") newWeapon=Weapon_Factory::sword();
@@ -118,9 +119,15 @@ void Game::LoadFile(const std::string& filename)
     int cond;
     fin>>cond;
     newWeapon.set_condition(cond);
+    fin>>weapon;
+    RangedWeapon newWeapon2;
+    if(weapon=="Bow") newWeapon2=Weapon_Factory::bow();
+    else if(weapon=="Crossbow") newWeapon2=Weapon_Factory::crossbow();
+    else if(weapon=="Gun") newWeapon2=Weapon_Factory::gun();
     int currency;
     fin>>currency;
-    player->WeaponChange(newWeapon);
+    player->MeleeWeaponChange(newWeapon);
+    player->RangedWeaponChange(newWeapon2);
     player->GainCurrency(currency);
     fin.close();
     InitializeEnemyList(filename);
@@ -188,8 +195,9 @@ void Game::WriteFile(const std::string& filename)
     else if(std::dynamic_pointer_cast<Mage>(player)) fout<<"Mage\n";
     else fout<<"Rogue\n";
     fout<<curr_level<<"\n";
-    fout<<player->get_weapontype()<<"\n";
+    fout<<player->get_meleeweapontype()<<"\n";
     fout<<player->get_weaponcondition()<<"\n";
+    fout<<player->get_rangedweapontype()<<"\n";
     fout<<player->get_currency()<<"\n";
     int len=(int)enemy_list.size();
     fout<<len-5<<"\n";
@@ -470,6 +478,7 @@ void Game::Battle()
         while(true)
         {
             int spellType = 0, spellPass = 0;
+            int choice=0;
             player->ShowAvailableActions();
             std::string op_;
             int op;
@@ -611,9 +620,37 @@ void Game::Battle()
                     break;
                 }
                 case 4:
+                {
+                    while(true)
+                    {
+                        std::cout<<"Your Current Ammo: "<<player->get_ammo()<<"\n";
+                        std::cout<<"1.Shoot\n2.Go back\n";
+                        std::string choice_;
+                        std::cin>>choice_;
+                        try
+                        {
+                            choice=std::stoi(choice_);
+                        }
+                        catch(std::logic_error&)
+                        {
+                            choice=-1;
+                        }
+                        if(choice==1)
+                        {
+                            std::shared_ptr<Entity> ph = enemy;
+                            int attack=player->RangedAttack(ph);
+                            if(attack==0) std::cout<<"No Bullets Left\n";
+                            else break;
+                        }
+                        else if(choice==2) break;
+                        else std::cout<<"Invalid Input\n";
+                    }
+                    break;
+                }
+                case 5:
                     player->ShowStats();
                     break;
-                case 5:
+                case 6:
                     fled = true;
                     break;
                 case 9:
@@ -632,7 +669,7 @@ void Game::Battle()
                     std::cout << "Invalid Input\n";
                     break;
             }
-            if (op == 1 || op == 5 || (op == 2 && checkWeapon && !invalid) || (op == 3 && spellPass == 1)) break;
+            if (op == 1 || op == 6 || (op == 2 && checkWeapon && !invalid) || (op == 3 && spellPass == 1) || (op==4 && choice==1)) break;
         }
         if(fled) break;
         if(!enemy->isAlive())
@@ -671,7 +708,10 @@ void Game::Shop()
         std::cout<<"3.Sword (Price: 250)\n";
         std::cout<<"4.Longsword (Price: 350)\n";
         std::cout<<"5.Mace (Price: 425)\n";
-        std::cout<<"6.Leave\n";
+        std::cout<<"6.Bow (Price: 75)\n";
+        std::cout<<"7.Crossbow (Price: 200)\n";
+        std::cout<<"8.Gun (Price: 325)\n";
+        std::cout<<"9.Leave\n";
         int op;
         std::string op_;
         std::cin>>op_;
@@ -683,39 +723,60 @@ void Game::Shop()
                 case 1:
                 {
                     player->SpendCurrency(100);
-                    player->WeaponChange(Weapon_Factory::dagger());
+                    player->MeleeWeaponChange(Weapon_Factory::dagger());
                     std::cout << "You bought a Dagger\n";
                     break;
                 }
                 case 2:
                 {
                     player->SpendCurrency(175);
-                    player->WeaponChange(Weapon_Factory::spear());
+                    player->MeleeWeaponChange(Weapon_Factory::spear());
                     std::cout << "You bought a Spear\n";
                     break;
                 }
                 case 3:
                 {
                     player->SpendCurrency(250);
-                    player->WeaponChange(Weapon_Factory::sword());
+                    player->MeleeWeaponChange(Weapon_Factory::sword());
                     std::cout << "You bought a Sword\n";
                     break;
                 }
                 case 4:
                 {
                     player->SpendCurrency(350);
-                    player->WeaponChange(Weapon_Factory::longsword());
+                    player->MeleeWeaponChange(Weapon_Factory::longsword());
                     std::cout << "You bought a Longsword\n";
                     break;
                 }
                 case 5:
                 {
                     player->SpendCurrency(425);
-                    player->WeaponChange(Weapon_Factory::mace());
+                    player->MeleeWeaponChange(Weapon_Factory::mace());
                     std::cout << "You bought a Mace\n";
                     break;
                 }
                 case 6:
+                {
+                    player->SpendCurrency(75);
+                    player->RangedWeaponChange(Weapon_Factory::bow());
+                    std::cout << "You bought a Bow\n";
+                    break;
+                }
+                case 7:
+                {
+                    player->SpendCurrency(200);
+                    player->RangedWeaponChange(Weapon_Factory::crossbow());
+                    std::cout << "You bought a Crossbow\n";
+                    break;
+                }
+                case 8:
+                {
+                    player->SpendCurrency(325);
+                    player->RangedWeaponChange(Weapon_Factory::gun());
+                    std::cout << "You bought a Gun\n";
+                    break;
+                }
+                case 9:
                     return;
                 default:
                     std::cout << "Invalid input\n";

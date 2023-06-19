@@ -18,7 +18,6 @@ public:
     void ShowStats() override;
     void ApplyEffects() override;
     void ResetStats() override;
-    void ShowAvailableAttacks() override;
     void ShowAvailableActions() override;
 };
 
